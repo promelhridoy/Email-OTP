@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -10,7 +11,24 @@ const activity = [
   { title: "Team onboarding checklist", meta: "Created last week" },
 ];
 
-export default async function HomePage() {
+export default function HomePage() {
+  return (
+    <Suspense fallback={<HomeSkeleton />}>
+      <Home />
+    </Suspense>
+  );
+}
+
+function HomeSkeleton() {
+  return (
+    <div className="mx-auto min-h-screen max-w-5xl px-6">
+      <div className="py-6 font-display text-xl font-semibold">Harbor</div>
+      <div className="h-64 animate-pulse rounded-3xl bg-line" />
+    </div>
+  );
+}
+
+async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/sign-in");
 
