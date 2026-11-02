@@ -19,10 +19,19 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
 
-    const { error } = await authClient.signUp.email({ name, email, password });
+    const { data, error } = await authClient.signUp.email({ name, email, password });
+
+    if (data?.token) {
+      alert("Sign up successful! Please check your email to verify your account.");
+
+      fetch(`http://localhost:5000/api/send-email?email=${email}&name=${name}`, {
+        method: "POST"
+    });
+    }
 
     setLoading(false);
     if (error) {
+      alert(error.message ?? "Could not create your account. Try again.");
       setError(error.message ?? "Could not create your account. Try again.");
       return;
     }
